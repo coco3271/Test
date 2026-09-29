@@ -1,0 +1,4 @@
+{
+  "_readme": "Drop your Suno songs (mp3/m4a/wav) into public/music/ and list them here. bpm/offset are optional - they are auto-detected if left out. 'mode' is dance, yoga or move. 'moves' is an optional list of move ids from src/data/moves.js to choreograph the song with.",
+  "songs": []
+}

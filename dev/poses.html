@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;height:100%;overflow:hidden}canvas{display:block;width:100vw;height:100vh}
+#lbl{position:fixed;top:8px;left:8px;font:bold 28px sans-serif;color:#fff;text-shadow:0 2px 4px #000}</style></head>
+<body><canvas id="c"></canvas><div id="lbl"></div>
+<script type="module">
+import { World } from '../src/engine/World.js';
+import { Avatar } from '../src/engine/Avatar.js';
+import { poseToArray } from '../src/engine/pose.js';
+import { POSES } from '../src/data/poses.js';
+import { buddyById } from '../src/data/buddies.js';
+const q = new URLSearchParams(location.search);
+const world = new World(document.getElementById('c'), { quality: 'high' });
+world.setTheme(q.get('theme') || 'meadow');
+const av = new Avatar(buddyById(q.get('buddy') || 'bear'));
+world.scene.add(av.root);
+const p = POSES[q.get('pose') || 'mountain'];
+av.setPose(poseToArray(p.pose)); av.setFace(p.pose.face || 'smile');
+if (q.get('yaw')) av.root.rotation.y = +q.get('yaw');
+document.getElementById('lbl').textContent = p.name;
+world.onUpdate((dt,t)=>av.update(dt,t));
+world.start();
+window.ready = true;
+</script></body></html>

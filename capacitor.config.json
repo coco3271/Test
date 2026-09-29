@@ -1,0 +1,16 @@
+{
+  "appId": "com.zoomimoves.app",
+  "appName": "Zoomi Moves",
+  "webDir": "dist",
+  "backgroundColor": "#48b8ff",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#48b8ff"
+  },
+  "android": {
+    "backgroundColor": "#48b8ff"
+  }
+}

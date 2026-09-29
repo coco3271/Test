@@ -1,0 +1,32 @@
+{
+  "name": "zoomi-moves",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Zoomi Moves - a 3D yoga, dance and movement game for kids (iOS / Android / web)",
+  "type": "module",
+  "scripts": {
+    "setup:vision": "node scripts/fetch-vision-assets.mjs",
+    "dev": "npm run setup:vision && vite --host",
+    "build": "npm run setup:vision && vite build",
+    "preview": "vite preview --host",
+    "cap:sync": "npm run build && cap sync",
+    "ios": "npm run cap:sync && cap open ios",
+    "android": "npm run cap:sync && cap open android"
+  },
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/ios": "^8.5.2",
+    "vite": "^8.3.1"
+  },
+  "dependencies": {
+    "@capacitor-community/keep-awake": "^8.0.1",
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
+    "@mediapipe/tasks-vision": "^1.0.1",
+    "three": "^0.186.1"
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Zoomi Moves</string>
+    <string name="title_activity_main">Zoomi Moves</string>
+    <string name="package_name">com.zoomimoves.app</string>
+    <string name="custom_url_scheme">com.zoomimoves.app</string>
+</resources>

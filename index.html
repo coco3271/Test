@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#48b8ff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Zoomi Moves</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+
+    <!-- Camera picture-in-picture (mirrored) -->
+    <div id="pip" class="hidden">
+      <video id="cam" playsinline muted autoplay></video>
+      <canvas id="skeleton"></canvas>
+    </div>
+
+    <div id="ui">
+      <!-- TITLE -->
+      <section id="screen-title" class="screen active">
+        <div class="logo"><span>Zoomi</span><span>Moves!</span></div>
+        <p class="tagline">Yoga • Dance • Move &amp; Groove</p>
+        <button class="big-btn pulse" data-action="start">▶ PLAY</button>
+      </section>
+
+      <!-- MODE SELECT -->
+      <section id="screen-modes" class="screen">
+        <header class="bar">
+          <button class="round-btn" data-action="buddies" aria-label="Choose buddy">🐻</button>
+          <div class="star-count">⭐ <span id="total-stars">0</span></div>
+          <button class="round-btn" data-action="stickers" aria-label="Sticker book">📒</button>
+          <button class="round-btn" data-action="parents" aria-label="Grown-ups">⚙️</button>
+        </header>
+        <div class="mode-cards">
+          <button class="mode-card yoga" data-mode="yoga"><span class="emoji">🧘</span><b>Yoga Adventure</b><small>Stretch like the animals</small></button>
+          <button class="mode-card dance" data-mode="dance"><span class="emoji">💃</span><b>Dance Party</b><small>Copy the moves to the music</small></button>
+          <button class="mode-card move" data-mode="move"><span class="emoji">🏃</span><b>Move &amp; Groove</b><small>Jump, stomp and FREEZE!</small></button>
+        </div>
+      </section>
+
+      <!-- LEVEL SELECT -->
+      <section id="screen-levels" class="screen">
+        <header class="bar">
+          <button class="round-btn" data-action="back" aria-label="Back">⬅</button>
+          <h2 id="levels-title"></h2>
+          <span></span>
+        </header>
+        <div id="level-list" class="level-list"></div>
+      </section>
+
+      <!-- BUDDIES -->
+      <section id="screen-buddies" class="screen">
+        <header class="bar">
+          <button class="round-btn" data-action="back" aria-label="Back">⬅</button>
+          <h2>Pick your buddy!</h2>
+          <span></span>
+        </header>
+        <div id="buddy-list" class="buddy-list"></div>
+      </section>
+
+      <!-- STICKERS -->
+      <section id="screen-stickers" class="screen">
+        <header class="bar">
+          <button class="round-btn" data-action="back" aria-label="Back">⬅</button>
+          <h2>My Stickers</h2>
+          <span></span>
+        </header>
+        <div id="sticker-grid" class="sticker-grid"></div>
+      </section>
+
+      <!-- PARENT GATE -->
+      <section id="screen-gate" class="screen">
+        <div class="panel">
+          <h2>Grown-ups only</h2>
+          <p id="gate-q"></p>
+          <div id="gate-answers" class="gate-answers"></div>
+          <button class="small-btn" data-action="back">Cancel</button>
+        </div>
+      </section>
+
+      <!-- PARENTS / SETTINGS -->
+      <section id="screen-parents" class="screen">
+        <div class="panel scroll">
+          <h2>Settings for grown-ups</h2>
+          <label class="row"><span>📷 Camera (scores moves)</span><input type="checkbox" id="set-camera" /></label>
+          <label class="row"><span>🗣️ Coach voice</span><input type="checkbox" id="set-voice" /></label>
+          <label class="row"><span>🎵 Music volume</span><input type="range" id="set-volume" min="0" max="1" step="0.05" /></label>
+          <label class="row"><span>✨ Graphics</span>
+            <select id="set-quality"><option value="auto">Auto</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Battery saver</option></select>
+          </label>
+          <h3>🎶 Your songs (e.g. from Suno)</h3>
+          <p class="hint">Add MP3 / M4A / WAV songs you made. They appear in Dance Party; the beat is detected automatically.</p>
+          <input type="file" id="song-file" accept="audio/*" multiple hidden />
+          <button class="small-btn" data-action="add-song">＋ Add songs</button>
+          <ul id="my-songs" class="my-songs"></ul>
+          <h3>🔒 Privacy</h3>
+          <p class="hint">The camera picture is analysed on this device only. Nothing is recorded, stored or sent anywhere.
+            Make sure there is a clear, safe space to move around, and that the phone is propped up securely.</p>
+          <button class="big-btn" data-action="close-parents">Done</button>
+        </div>
+      </section>
+
+      <!-- CAMERA SETUP -->
+      <section id="screen-camera" class="screen">
+        <div class="panel camera-panel">
+          <h2 id="cam-title">Step back so I can see you!</h2>
+          <p id="cam-hint">Prop the phone up, then stand back until your whole body — head to toes — is in the picture.</p>
+          <div id="cam-status" class="cam-status">Starting camera…</div>
+          <div class="row-btns">
+            <button class="small-btn" data-action="no-camera">Play without camera</button>
+            <button class="small-btn" data-action="back">Back</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- IN GAME HUD -->
+      <section id="screen-game" class="screen hud">
+        <header class="hud-top">
+          <button class="round-btn" data-action="pause" aria-label="Pause">⏸</button>
+          <div class="progress"><div id="hud-progress"></div></div>
+          <div class="hud-score"><span id="hud-score">0</span></div>
+        </header>
+        <div id="hud-caption" class="caption"></div>
+        <div id="hud-breath" class="breath"></div>
+        <div id="hud-cards" class="cards">
+          <div class="card current"><div class="thumb"><img id="card-img" alt="" /><span id="card-emoji"></span></div><b id="card-name"></b>
+            <div class="card-bar"><div id="card-bar"></div></div>
+            <svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" /><circle id="ring-fg" cx="50" cy="50" r="45" /></svg>
+            <span id="ring-num" class="ring-num"></span>
+          </div>
+          <div class="card next" id="card-next"><span class="label">NEXT</span><span id="next-emoji"></span><b id="next-name"></b></div>
+        </div>
+        <div id="hud-match" class="match"><div id="match-fill"></div><span>👀</span></div>
+        <div id="hud-meter" class="meter"><div id="meter-fill"></div><span id="meter-label"></span></div>
+        <div id="hud-judge" class="judge"></div>
+        <div id="hud-count" class="count"></div>
+        <div id="hud-banner" class="banner"></div>
+        <div id="hud-stars" class="stars-pop"></div>
+      </section>
+
+      <!-- PAUSE -->
+      <section id="screen-pause" class="screen">
+        <div class="panel">
+          <h2>Paused</h2>
+          <button class="big-btn" data-action="resume">▶ Keep playing</button>
+          <button class="small-btn" data-action="quit">🏠 Home</button>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section id="screen-results" class="screen">
+        <div class="panel results">
+          <h2 id="res-title">Amazing!</h2>
+          <div id="res-stars" class="res-stars"></div>
+          <div id="res-score" class="res-score"></div>
+          <div class="sticker-earned"><span>New sticker!</span><div id="res-sticker"></div></div>
+          <div class="row-btns">
+            <button class="big-btn" data-action="again">↻ Again!</button>
+            <button class="small-btn" data-action="home">🏠 Home</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="loading">Loading…</div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
